@@ -1,4 +1,4 @@
-package eway.bai2;
+package eway.bai1.Example2;
 
 
 import java.io.*;

@@ -1,4 +1,4 @@
-package eway.bai1;
+package eway.bai1.Example1;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class Demo {
     public static void main(String[] args) {
 
-        String input = "src/eway/bai1/input.txt";
+        String input = "src/eway/bai1/Example1/input.txt";
 
 
         try {
@@ -36,7 +36,7 @@ public class Demo {
             System.out.println("tong so ki tu thuong: " + sumCharUpperCase(str));
 
             String text = "Toi yeu ha noi pho";
-            String output = "src/eway/bai1/output1.txt";
+            String output = "src/eway/bai1/Example1/output1.txt";
             FileWriter fileWriter = new FileWriter(output);
             boolean isMatches;
             for (String strElement : listStr
