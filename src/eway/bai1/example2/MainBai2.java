@@ -56,8 +56,8 @@ public class MainBai2 {
                 }
             }
         }
-        String inputTxt = "src/eway/bai2/ input_co.txt";
-        String outputTxt = "src/eway/bai2/output_co.txt";
+        String inputTxt = "src/eway/bai1/example2/input_co.txt";
+        String outputTxt = "src/eway/bai1/example2/output_co.txt";
         boolean isSuccess = MainBai2.isprintfTxt(listPhonesIPPrintf, inputTxt);
         boolean isSuccess1 = MainBai2.isprintfTxt(listPhonesOPPrintf, outputTxt);
         if (isSuccess & isSuccess1){
