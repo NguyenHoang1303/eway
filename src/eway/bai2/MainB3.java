@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class MainB3 {
     public static void main(String[] args) {
         String dateNow = MainB3.getDateNow();
-        String inputPath = "D:\\eway\\input";
+        String inputPath = "input";
         File file = new File(inputPath);
         File[] arrFile = file.listFiles();
         List<String> listTxtIP = new ArrayList<>();
