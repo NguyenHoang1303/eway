@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 
 public class MainB3 {
 
+    public static final String INFOR_MESSAGE = "(\\+84[0-9]{9,10})\\((.+)\\|(.+)\\|(.+)\\)";
+    public static final String TIME = "(0[0-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-([0-9]{4})[ -/]([01][0-9]|2[0-3]):([0-5][0-9]:([0-5][0-9]))";
+
     public static void main(String[] args) {
         String dateNow = MainB3.getDateNow();
         String structPath = "bai2/input/struct.txt";
@@ -20,12 +23,8 @@ public class MainB3 {
         List<String> listStruct = MainB3.getListStruct(listInforStruct);
         String messagePath = "bai2/input/message.txt";
         List<String> listInforMess = MainB3.readFile(messagePath);
-        String s = "+840234768746(dk|28-11-2015 14:23:00|105)";
-        String str = MainB3.getMessage(s);
 
-
-
-
+        boolean check = MainB3.checkTime("");
 
 
 
@@ -71,17 +70,27 @@ public class MainB3 {
         return list;
     }
 
-    public static String getMessage(String s){
-        Pattern pattern = Pattern.compile("(\\+84[0-9]{9})\\((.+)\\|(.+)\\|");
-        Matcher matcher = pattern.matcher(s);
-        while (matcher.find()){
-           String str = matcher.group(1);
-            System.out.println(matcher.group());
-            System.out.println(matcher.group(2));
-            System.out.println(matcher.group(3));
-            System.out.println(matcher.group(4));
+    public static String getStructMessage(String messInfor){
+        Pattern pattern = Pattern.compile(INFOR_MESSAGE);
+        Matcher matcher = pattern.matcher(messInfor);
+        String structMess = null;
+        if (matcher.find()){
+         structMess = matcher.group(2).concat(" " + matcher.group(4));
+
         }
-        return null;
+        return structMess;
+    }
+
+    public static boolean checkTime(String date){
+        String s = "17-10-2015 14:23:00";
+        String dateNow = MainB3.getDateNow();
+        Pattern pattern = Pattern.compile(TIME);
+        Matcher matcher = pattern.matcher(s);
+        if (matcher.find()){
+            System.out.println(matcher.group());
+            System.out.println(dateNow);
+        }
+        return false;
     }
 
     public static String getDateNow(){

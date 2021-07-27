@@ -1,6 +1,7 @@
 package eway.bai1.example1;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,15 +12,8 @@ public class Demo {
 
     public static void main(String[] args) {
         String input = "src/eway/bai1/example1/input.txt";
-        try {
-            FileInputStream fileInputStream = new FileInputStream(input);
-            Scanner readFile = new Scanner(fileInputStream);
 
-            List<String> listStringFileInput = new ArrayList<>();
-            while (readFile.hasNextLine()) {
-                listStringFileInput.add(readFile.nextLine());
-            }
-
+            List<String> listStringFileInput = Demo.readFile(input);
             // tao 1 chuoi duy nhat tu file input
             String strCreatByFileInput = String.join(" ", listStringFileInput);
 
@@ -33,6 +27,7 @@ public class Demo {
             System.out.println("tong so ki tu thuong: " + sumCharUpperCase(strCreatByFileInput));
 
             String output = "src/eway/bai1/example1/output1.txt";
+        try {
             FileWriter fileWriter = new FileWriter(output);
             for (String stringElement : listStringFileInput
             ) {
@@ -51,49 +46,63 @@ public class Demo {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
-
+    static  List<String> readFile(String path){
+        List<String> list = new ArrayList<>();
+        try {
+            FileInputStream fileInputStream = new FileInputStream(path);
+            Scanner readFile = new Scanner(fileInputStream);
+            while (readFile.hasNextLine()) {
+                list.add(readFile.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     // tinh tong ki tu
-    static int sumChar(String str) {
+    static int sumChar(String text) {
         int count = 0;
         boolean isUpperCase;
         boolean isLowerCase;
-        for (char chr : str.toCharArray()
+        for (char characterInText : text.toCharArray()
         ) {
-            isUpperCase = (chr >= 'A' && chr <= 'Z');
-            isLowerCase = (chr >= 'a' && chr <= 'z');
+            isUpperCase = (characterInText >= 'A' && characterInText <= 'Z');
+            isLowerCase = (characterInText >= 'a' && characterInText <= 'z');
             if (isLowerCase || isUpperCase) count++;
         }
         return count;
     }
 
     // tinh tong ki tu thuong
-    static int sumCharUpperCase(String str) {
+    static int sumCharUpperCase(String text) {
         int count = 0;
         boolean isLowerCase;
-        for (char chr : str.toCharArray()) {
-            isLowerCase = (chr >= 'a' && chr <= 'z');
+        for (char characterInText : text.toCharArray()) {
+            isLowerCase = (characterInText >= 'a' && characterInText <= 'z');
             if (isLowerCase) count++;
         }
         return count;
     }
 
     // In cac ki tu in hoa
-    static void printUpperCase(String str) {
+    static void printUpperCase(String text) {
         int count = 0;
-        for (char chr : str.toCharArray()
+        for (char characterInText : text.toCharArray()
         ) {
-            if (chr >= 'A' && chr <= 'Z') {
+            if (characterInText >= 'A' && characterInText <= 'Z') {
                 count++;
-                System.out.printf("ki tu in hoa thu %d: %c\n", count, chr);
+                System.out.printf("ki tu in hoa thu %d: %c\n", count, text);
             }
         }
     }
     // loại bỏ khoảng trắng thừa
-    static String removeSpace(String str) {
+    static String removeSpace(String text) {
         String regexRemoveSpace = "\\s\\s+";
-        return str.replaceAll(regexRemoveSpace, " ").trim();
+        return text.replaceAll(regexRemoveSpace, " ").trim();
     }
     // xử lí chuỗi theo yêu cầu của đề bài là thêm và đổi chuỗi viết hoa
     static String handleString(String text) {
@@ -104,5 +113,4 @@ public class Demo {
         if (text.equals(textFilter)) return text.toUpperCase();
         return null;
     }
-
 }

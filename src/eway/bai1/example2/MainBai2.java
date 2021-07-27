@@ -17,26 +17,13 @@ public class MainBai2 {
     public static void main(String[] args) {
         String pathInput = "bai1Example2/input";
         List<String> listAllFileTxtInput = MainBai2.getpathfileTxt(pathInput);
-        List<String> fileListByRequestNameInput = new ArrayList<>();
-        if (listAllFileTxtInput != null) {
-            for (String strPathInput : listAllFileTxtInput) {
-                if (MainBai2.getNameOnRequestInput(strPathInput)) {
-                    fileListByRequestNameInput.add(strPathInput);
-                }
-            }
-        }
-        String pathOutput = "C:\\Users\\LaptopAZ.vn\\Desktop\\output";
+        List<String> listFileByRequestNameInput = MainBai2.getListFileByName(listAllFileTxtInput);
+        String pathOutput = "bai1Example2/output";
         List<String> listAllFileTxtOutput = MainBai2.getpathfileTxt(pathOutput);
-        List<String> fileListByRequestNameOutput = new ArrayList<>();
-        if (listAllFileTxtOutput != null) {
-            for (String strPathOutput : listAllFileTxtOutput) {
-                if (MainBai2.getNameOnRequestOutput(strPathOutput)) {
-                    fileListByRequestNameOutput.add(strPathOutput);
-                }
-            }
-        }
+        List<String> listFileByRequestNameOutput = MainBai2.getListFileByName(listAllFileTxtOutput);
+
         List<String> listDate = new ArrayList<>();
-        for (String s2 : fileListByRequestNameInput) {
+        for (String s2 : listFileByRequestNameInput) {
             String nameTxt = MainBai2.getDate(s2);
             listDate.add(nameTxt);
         }
@@ -44,26 +31,26 @@ public class MainBai2 {
         List<String> listPhoneByDateOutput = new ArrayList<>();
         List<String> listDateNotDuplicate = MainBai2.listNotDuplicate(listDate);
         for (String date : listDateNotDuplicate) {
-            String stringListPhoneInput = MainBai2.getlistbydate(fileListByRequestNameInput, date);
-            String stringListPhoneOutput = MainBai2.getlistbydate(fileListByRequestNameOutput, date);
+            String stringListPhoneInput = MainBai2.getlistbydate(listFileByRequestNameInput, date);
+            String stringListPhoneOutput = MainBai2.getlistbydate(listFileByRequestNameOutput, date);
             listPhoneByDateInput.add(stringListPhoneInput);
             listPhoneByDateOutput.add(stringListPhoneOutput);
         }
-        System.out.println("listPhoneByDateOutput: " + listPhoneByDateInput);
+        System.out.println("listPhoneByDateIntput: " + listPhoneByDateInput);
         System.out.println("\n");
         System.out.println("listPhoneByDateOutput: " + listPhoneByDateOutput);
 
         List<String> listPrintInput = new ArrayList<>();
         List<String> listPrintOutput = new ArrayList<>();
-        for (String sIp : listPhoneByDateInput) {
-            for (String sOp : listPhoneByDateOutput) {
-                String strIp = MainBai2.getListPhoneNotDuplicateInput(sIp, sOp);
-                String strOp = MainBai2.getListPhoneNotDuplicateOutput(sIp, sOp);
-                if (strIp != null) {
-                   listPrintInput.add(strIp);
+        for (String phoneByDateInput : listPhoneByDateInput) {
+            for (String phoneByDateOutput : listPhoneByDateOutput) {
+                String listPhoneInput = MainBai2.getListPhoneNotDuplicateInput(phoneByDateInput, phoneByDateOutput);
+                String listPhoneOutput = MainBai2.getListPhoneNotDuplicateOutput(phoneByDateInput, phoneByDateOutput);
+                if (listPhoneInput != null) {
+                   listPrintInput.add(listPhoneInput);
                 }
-                if (strOp != null) {
-                    listPrintOutput.add(strOp);
+                if (listPhoneOutput != null) {
+                    listPrintOutput.add(listPhoneOutput);
                 }
             }
         }
@@ -94,20 +81,38 @@ public class MainBai2 {
         return null;
     }
 
-    public static Boolean getNameOnRequestInput(String path) {
+    public static boolean getNameOnRequestInput(String path) {
         File file = new File(path);
         String name = file.getName();
         String regexTxt = "^cdr_[0-9]{8}_8x56_[0-9].txt";
         return name.matches(regexTxt);
     }
 
-    public static Boolean getNameOnRequestOutput(String path) {
+    public static boolean getNameOnRequestOutput(String path) {
         File file = new File(path);
         String name = file.getName();
         String regexTxt = "^[0-9]{8}_8x56_[0-9].txt";
         return name.matches(regexTxt);
     }
 
+    public static List<String> getListFileByName(List<String> listpath){
+        List<String> listFileByNameOnRequest = new ArrayList<>();
+        String pathInput = "bai1Example2\\input";
+        String pathOutput = "bai1Example2\\output";
+        if (listpath != null) {
+            for (String path : listpath) {
+                boolean checkpatInput = path.contains(pathInput) && MainBai2.getNameOnRequestInput(path);
+                boolean checkpatOutput = path.contains(pathOutput) && MainBai2.getNameOnRequestOutput(path);
+                if (checkpatInput) {
+                    listFileByNameOnRequest.add(path);
+                }
+                if (checkpatOutput){
+                    listFileByNameOnRequest.add(path);
+                }
+            }
+        }
+        return listFileByNameOnRequest;
+    }
 
     public static String getDate(String filePath) {
         File file = new File(filePath);
