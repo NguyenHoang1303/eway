@@ -1,5 +1,7 @@
 package eway.bai2;
 
+import eway.bai1.example2.MainBai2;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,77 +12,76 @@ import java.util.regex.Pattern;
 
 
 public class MainB3 {
+
     public static void main(String[] args) {
         String dateNow = MainB3.getDateNow();
-        String inputPath = "input";
-        File file = new File(inputPath);
-        File[] arrFile = file.listFiles();
-        List<String> listTxtIP = new ArrayList<>();
-        if (arrFile != null) {
-            for (File f : arrFile) {
-                try {
-                    String nameStruct = "struct.txt";
-                    String messageName = "message.txt";
-                    if (nameStruct.equals(f.getName())) {
-                        FileInputStream fileInputStream = new FileInputStream(f.toString());
-                        Scanner readFile = new Scanner(fileInputStream);
-                        while (readFile.hasNextLine()) {
-                            String strStruct = MainB3.getStruct(readFile.nextLine());
-                            if (strStruct != null){
-                                listTxtIP.add(strStruct);
-                                System.out.println(strStruct+ "\n");
-                            }
-                        }
-                    }
-                    if (messageName.equals(f.getName())){
-                        FileInputStream fileInputStream = new FileInputStream(f.toString());
-                        Scanner readFile = new Scanner(fileInputStream);
-                        while (readFile.hasNextLine()){
-                            System.out.println(readFile.nextLine());
-                        }
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        String structPath = "bai2/input/struct.txt";
+        List<String> listInforStruct = MainB3.readFile(structPath);
+        List<String> listStruct = MainB3.getListStruct(listInforStruct);
+        String messagePath = "bai2/input/message.txt";
+        List<String> listInforMess = MainB3.readFile(messagePath);
+        String s = "+840234768746(dk|28-11-2015 14:23:00|105)";
+        String str = MainB3.getMessage(s);
 
-//        String ts = "src/eway/bai3/test.txt";
-//        FileWriter fileWriter;
-//        try {
-//            fileWriter = new FileWriter(ts);
-//            for (String str : listTxtIP
-//            ) {
-//                if (str != null) {
-//                    fileWriter.write(str + "\n");
-//                }
-//            }
-//            fileWriter.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
+
+
+
+
 
 
     }
 
-    public static String getStruct(String strStruct) {
-        Pattern patternPhone = Pattern.compile("\\+[0-9]{3,4}");
-        Pattern patternStruct = Pattern.compile("\\(([^)]+)\\)");
-        Matcher matcherPhone = patternPhone.matcher(strStruct);
-        Matcher matcherStruct = patternStruct.matcher(strStruct);
-        String strPhone = null;
-        String str = null;
+    public static List<String> readFile(String path){
+        List<String> list = new ArrayList<>();
+        try {
+            FileInputStream fileInputStream = new FileInputStream(path);
+            Scanner readFile = new Scanner(fileInputStream);
+            while (readFile.hasNextLine()){
+               list.add(readFile.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static String getStruct(String str) {
+        Pattern pattern = Pattern.compile("([0-9]{3,4})(.+)\\((([^)]+))\\)");
+        Matcher matcher = pattern.matcher(str);
+        String phone = null;
+        String struct = null;
         String strRs = null;
-        while (matcherPhone.find()) {
-            strPhone = matcherPhone.group();
+        while (matcher.find()) {
+            phone = matcher.group(1);
+            struct = matcher.group(3);
         }
-        while (matcherStruct.find()) {
-            str = matcherStruct.group();
-        }
-        if (str!= null && strPhone != null){
-            strRs = strPhone + ": " + str;
+        if (struct!= null && phone != null){
+            strRs = phone + " : " + struct;
         }
         return strRs;
+    }
+
+    public static List<String> getListStruct(List<String> listStruct){
+        List<String> list = new ArrayList<>();
+        for (String inforStruct: listStruct) {
+            String struct = MainB3.getStruct(inforStruct);
+            if (struct != null) list.add(struct);
+        }
+        return list;
+    }
+
+    public static String getMessage(String s){
+        Pattern pattern = Pattern.compile("(\\+84[0-9]{9})\\((.+)\\|(.+)\\|");
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find()){
+           String str = matcher.group(1);
+            System.out.println(matcher.group());
+            System.out.println(matcher.group(2));
+            System.out.println(matcher.group(3));
+            System.out.println(matcher.group(4));
+        }
+        return null;
     }
 
     public static String getDateNow(){
