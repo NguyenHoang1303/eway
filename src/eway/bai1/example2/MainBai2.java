@@ -18,6 +18,7 @@ public class MainBai2 {
         String pathInput = "bai1Example2/input";
         List<String> listAllFileTxtInput = MainBai2.getpathfileTxt(pathInput);
         List<String> listFileByRequestNameInput = MainBai2.getListFileByName(listAllFileTxtInput);
+        System.out.println(listFileByRequestNameInput);
         String pathOutput = "bai1Example2/output";
         List<String> listAllFileTxtOutput = MainBai2.getpathfileTxt(pathOutput);
         List<String> listFileByRequestNameOutput = MainBai2.getListFileByName(listAllFileTxtOutput);
@@ -36,10 +37,6 @@ public class MainBai2 {
             listPhoneByDateInput.add(stringListPhoneInput);
             listPhoneByDateOutput.add(stringListPhoneOutput);
         }
-        System.out.println("listPhoneByDateIntput: " + listPhoneByDateInput);
-        System.out.println("\n");
-        System.out.println("listPhoneByDateOutput: " + listPhoneByDateOutput);
-
         List<String> listPrintInput = new ArrayList<>();
         List<String> listPrintOutput = new ArrayList<>();
         for (String phoneByDateInput : listPhoneByDateInput) {
@@ -60,7 +57,7 @@ public class MainBai2 {
         MainBai2.isprintfTxt(listPrintOutput, pathPrintOutput);
 
     }
-
+//lấy ra tất cả các file txt trong thư mục
     public static List<String> getpathfileTxt(String path) {
         List<String> listFile = new ArrayList<>();
         File file = new File(path);
@@ -80,21 +77,21 @@ public class MainBai2 {
         }
         return null;
     }
-
+    // kiểm tra tên theo đúng định dạng file txt trong Input
     public static boolean getNameOnRequestInput(String path) {
         File file = new File(path);
         String name = file.getName();
         String regexTxt = "^cdr_[0-9]{8}_8x56_[0-9].txt";
         return name.matches(regexTxt);
     }
-
+// kiểm tra tên theo đúng định dạng file txt trong Output
     public static boolean getNameOnRequestOutput(String path) {
         File file = new File(path);
         String name = file.getName();
         String regexTxt = "^[0-9]{8}_8x56_[0-9].txt";
         return name.matches(regexTxt);
     }
-
+// lấy ra các file Txt theo yêu cầu của đề
     public static List<String> getListFileByName(List<String> listpath){
         List<String> listFileByNameOnRequest = new ArrayList<>();
         String pathInput = "bai1Example2\\input";
@@ -113,7 +110,7 @@ public class MainBai2 {
         }
         return listFileByNameOnRequest;
     }
-
+// lấy ra ngày trong tên của các file txt
     public static String getDate(String filePath) {
         File file = new File(filePath);
         String fileNameTxt = file.getName();
@@ -125,7 +122,7 @@ public class MainBai2 {
         }
         return date;
     }
-
+// lấy ra sdt đúng định dạng trong file txt
     public static List<String> getListPhone(String path) {
         List<String> list = new ArrayList<>();
         try {
@@ -145,10 +142,9 @@ public class MainBai2 {
         }
         return list;
     }
-
+// láy ra những số điện thoại không trùng lặp
     public static List<String> listNotDuplicatePhone(List<String> list1, List<String> list2) {
         List<String> list = new ArrayList<>();
-        String phone = "null";
         boolean isList = list1.size() > 0 && list2.size() > 0;
         boolean isPhone;
         if (isList) {
@@ -161,13 +157,12 @@ public class MainBai2 {
                 }
                 if (count == list2.size()) {
                     list.add(phone1);
-                    phone = phone.concat(phone1 + " ");
                 }
             }
         }
         return list;
     }
-
+// lấy ra tất cả sdt trong 1 ngày và tạo thành 1 chuỗi với fomat: [date] sdt sdt sdt
     public static String getlistbydate(List<String> listPath, String date) {
         String phone = "[" + date + "] ";
         boolean isDuplicate;
@@ -186,14 +181,14 @@ public class MainBai2 {
         phone = phone.concat(stringPhoneList + " ");
         return phone;
     }
-
+//kiểm tra ngày giống nhau
     public static boolean isCheckDate(String stringListIp, String stringListOp){
         Pattern pattern = Pattern.compile(DATE);
         Matcher matcherIP = pattern.matcher(stringListIp);
         Matcher matcherOP = pattern.matcher(stringListOp);
         return matcherIP.find() && matcherOP.find() && matcherIP.group(1).equals(matcherOP.group(1));
     }
-
+// lấy ngày trong chuỗi
     public static String getDateInString(String str){
         Pattern pattern = Pattern.compile(DATE);
         Matcher matcher = pattern.matcher(str);
@@ -201,11 +196,11 @@ public class MainBai2 {
         return null;
 
     }
-
+// chuyển từ mảng sang arrlist
     public static ArrayList<String> convertArrToArrayList(String[] list){
         return new  ArrayList<>(Arrays.asList(list));
     }
-
+//lấy ra các sđt của output có mà input ko có
     public static String getListPhoneNotDuplicateOutput(String stringListIp, String stringListOp){
         boolean isCheck = MainBai2.isCheckDate(stringListIp, stringListOp);
         if (isCheck) {
@@ -222,7 +217,7 @@ public class MainBai2 {
         }
         return null;
     }
-
+// lất ra sđt input có mà output ko có
     public static String getListPhoneNotDuplicateInput(String stringListIp, String stringListOp) {
         boolean isCheck = MainBai2.isCheckDate(stringListIp, stringListOp);
         if (isCheck) {
@@ -245,13 +240,13 @@ public class MainBai2 {
         }
         return null;
     }
-
+//loại bỏ những phần tử trùng lặp trong list
     public static List<String> listNotDuplicate(List<String> list) {
         return list.stream()
                 .distinct()
                 .collect(Collectors.toList());
     }
-
+//in ra file
     public static void isprintfTxt(List<String> list, String path) {
         try {
             FileWriter fileWriter = new FileWriter(path);
