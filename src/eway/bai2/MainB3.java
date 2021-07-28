@@ -27,23 +27,23 @@ public class MainB3 {
         //lọc messeage theo đầu số tổng đài viettel
         HashMap<String, String> listMessageByPhoneViettel = MainB3.getMessageByPhoneViettel(listPhoneViettelInMessage, listMessageInvalid);
         
-        LinkedList<String> linkedListSortMessageDuplicatePhoneByDate = new LinkedList<>();
+        LinkedList<String> linkedListMessage = new LinkedList<>();
         for (String key : listMessageByPhoneViettel.keySet()) {
             String messageByPhoneViettel = listMessageByPhoneViettel.get(key);
             List<String> listMessage = MainB3.convertStringToList(messageByPhoneViettel);
             //sap xep message theo thời gian tăng dần
             MainB3.sortMessageByDate(listMessage);
             //danh sách message theo yêu cầu bài toán
-            linkedListSortMessageDuplicatePhoneByDate.addAll(MainB3.sortMessageDuplicatePhoneByDate(listMessage));
+            linkedListMessage.addAll(MainB3.sortMessageDuplicatePhoneByDate(listMessage));
         }
 
-        HashMap<String,String> hashMap = MainB3.getMessageByPhoneViettel(listPhoneViettelInMessage,linkedListSortMessageDuplicatePhoneByDate);
+        HashMap<String,String> hashMapMessageByRequest = MainB3.getMessageByPhoneViettel(listPhoneViettelInMessage,linkedListMessage);
         try {
             String path = "bai2/output/";
-            for (String key: hashMap.keySet()) {
+            for (String key: hashMapMessageByRequest.keySet()) {
                 String pathMessage = path + key + ".txt";
                 FileWriter fw = new FileWriter(pathMessage);
-                fw.write(hashMap.get(key));
+                fw.write(hashMapMessageByRequest.get(key));
                 fw.close();
             }
         } catch (IOException e) {
@@ -112,8 +112,8 @@ public class MainB3 {
         return inforMess;
     }
     // sắp xếp ngày tăng dần theo ngày tháng
-    public static void sortMessageByDate(List<String> listMesseage) {
-        listMesseage.sort(new Comparator<String>() {
+    public static void sortMessageByDate(List<String> listMessage) {
+        listMessage.sort(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 String o1Date = MainB3.getDateMessInformation(o1).toString();
