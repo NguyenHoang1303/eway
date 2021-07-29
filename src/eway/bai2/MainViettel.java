@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class MainB3 {
+public class MainViettel {
 
     public static final String INFOR_MESSAGE = "(\\+84[0-9]{9,10})\\((.+)\\|(.+)\\|(.+)\\)";
     public static final String TIME = "(0[0-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-([0-9]{4})";
@@ -17,27 +17,27 @@ public class MainB3 {
 
     public static void main(String[] args) {
         String structPath = "bai2/input/struct.txt";
-        List<String> listInforStruct = MainB3.readFile(structPath);
+        List<String> listInforStruct = MainViettel.readFile(structPath);
         String messagePath = "bai2/input/message.txt";
-        List<String> listInforMess = MainB3.readFile(messagePath);
+        List<String> listInforMess = MainViettel.readFile(messagePath);
         //danh sách mesage theo yeu cầu 1,2
-        List<String> listMessageInvalid = MainB3.getListMessageByRequest(listInforMess, listInforStruct);
+        List<String> listMessageInvalid = MainViettel.getListMessageByRequest(listInforMess, listInforStruct);
         //danh sách các đầu số tổng đài
-        List<String> listPhoneViettelInMessage = MainB3.getPhoneViettelInMessage(listMessageInvalid);
+        List<String> listPhoneViettelInMessage = MainViettel.getPhoneViettelInMessage(listMessageInvalid);
         //lọc messeage theo đầu số tổng đài viettel
-        HashMap<String, String> listMessageByPhoneViettel = MainB3.getMessageByPhoneViettel(listPhoneViettelInMessage, listMessageInvalid);
+        HashMap<String, String> listMessageByPhoneViettel = MainViettel.getMessageByPhoneViettel(listPhoneViettelInMessage, listMessageInvalid);
         
         LinkedList<String> linkedListMessage = new LinkedList<>();
         for (String key : listMessageByPhoneViettel.keySet()) {
             String messageByPhoneViettel = listMessageByPhoneViettel.get(key);
-            List<String> listMessage = MainB3.convertStringToList(messageByPhoneViettel);
+            List<String> listMessage = MainViettel.convertStringToList(messageByPhoneViettel);
             //sap xep message theo thời gian tăng dần
-            MainB3.sortMessageByDate(listMessage);
+            MainViettel.sortMessageByDate(listMessage);
             //danh sách message theo yêu cầu bài toán
-            linkedListMessage.addAll(MainB3.sortMessageDuplicatePhoneByDate(listMessage));
+            linkedListMessage.addAll(MainViettel.sortMessageDuplicatePhoneByDate(listMessage));
         }
 
-        HashMap<String,String> hashMapMessageByRequest = MainB3.getMessageByPhoneViettel(listPhoneViettelInMessage,linkedListMessage);
+        HashMap<String,String> hashMapMessageByRequest = MainViettel.getMessageByPhoneViettel(listPhoneViettelInMessage,linkedListMessage);
         try {
             String path = "bai2/output/";
             for (String key: hashMapMessageByRequest.keySet()) {
@@ -116,18 +116,18 @@ public class MainB3 {
         listMessage.sort(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                String o1Date = MainB3.getDateMessInformation(o1).toString();
-                String o2Date = MainB3.getDateMessInformation(o2).toString();
+                String o1Date = MainViettel.getDateMessInformation(o1).toString();
+                String o2Date = MainViettel.getDateMessInformation(o2).toString();
                 return o1Date.compareTo(o2Date);
             }
         });
     }
     // kiểm tra cú pháp trong message có đúng ko?
     public static boolean checkStruct(String messInfor, String structInfor) {
-        String structMess = MainB3.getInforMessage(messInfor, 2);
-        String phoneMess = MainB3.getInforMessage(messInfor, 4);
-        String structViettel = MainB3.getInforViettel(structInfor, 2);
-        String phoneViettel = MainB3.getInforViettel(structInfor, 1);
+        String structMess = MainViettel.getInforMessage(messInfor, 2);
+        String phoneMess = MainViettel.getInforMessage(messInfor, 4);
+        String structViettel = MainViettel.getInforViettel(structInfor, 2);
+        String phoneViettel = MainViettel.getInforViettel(structInfor, 1);
         boolean checkPhone = false;
         boolean checkMess = false;
         if (phoneMess != null && phoneViettel != null) {
@@ -157,9 +157,9 @@ public class MainB3 {
     static LocalDate getDateMessInformation(String messInfor) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         Pattern pattern = Pattern.compile(TIME);
-        boolean checkinforMessage = MainB3.getInforMessage(messInfor, 3) != null;
+        boolean checkinforMessage = MainViettel.getInforMessage(messInfor, 3) != null;
         if (checkinforMessage) {
-            String timeMessage = MainB3.getInforMessage(messInfor, 3);
+            String timeMessage = MainViettel.getInforMessage(messInfor, 3);
             Matcher matcher = pattern.matcher(timeMessage);
             if (matcher.find()) {
                 return LocalDate.from(dateFormat.parse(matcher.group()));
@@ -173,7 +173,7 @@ public class MainB3 {
         boolean checkStructAndDate;
         for (String messInfor : listMess) {
             for (String inforViettel : listVietel) {
-                checkStructAndDate = MainB3.checkStruct(messInfor, inforViettel) && MainB3.checkTime(messInfor);
+                checkStructAndDate = MainViettel.checkStruct(messInfor, inforViettel) && MainViettel.checkTime(messInfor);
                 if (checkStructAndDate) {
                     list.add(messInfor);
                 }
@@ -201,7 +201,7 @@ public class MainB3 {
     static List<String> getPhoneViettelInMessage(List<String> listMessage) {
         List<String> listPhoneViettelInMessage = new ArrayList<>();
         for (String messValid : listMessage) {
-            String phoneViettel = MainB3.getInforMessage(messValid, 4);
+            String phoneViettel = MainViettel.getInforMessage(messValid, 4);
             int count = 0;
             if (listPhoneViettelInMessage.size() > 0) {
                 for (String phoneVT : listPhoneViettelInMessage) {
@@ -227,7 +227,7 @@ public class MainB3 {
         HashMap<String, String> list = new HashMap<>();
         for (String phoneViettel : listPhoneVT) {
             for (String message : listMessage) {
-                String phoneMessage = MainB3.getInforMessage(message, 4);
+                String phoneMessage = MainViettel.getInforMessage(message, 4);
                 boolean chekKey = list.containsKey(phoneViettel);
                 if (chekKey && phoneMessage.equals(phoneViettel)) {
                     String str = list.get(phoneViettel).concat(" /// " + message);
@@ -247,14 +247,14 @@ public class MainB3 {
 //lấy ra các message trùng sđt và sđt tổng đài cách nhau 1 tháng
     static LinkedList<String> sortMessageDuplicatePhoneByDate(List<String> list) {
         LinkedList<String> linkedList = new LinkedList<>();
-        MainB3.sortMessageByDate(list);
+        MainViettel.sortMessageByDate(list);
         for (String element : list) {
-            LocalDate date105 = MainB3.getDateMessInformation(element);
+            LocalDate date105 = MainViettel.getDateMessInformation(element);
             if (linkedList.size() > 0) {
                 String lastElement = linkedList.getLast();
-                LocalDate lastDate = MainB3.getDateMessInformation(lastElement);
+                LocalDate lastDate = MainViettel.getDateMessInformation(lastElement);
                 if (date105 != null && lastDate != null) {
-                    boolean check = MainB3.getDayBetween(date105, lastDate) > 30;
+                    boolean check = MainViettel.getDayBetween(date105, lastDate) > 30;
                     if (check) {
                         linkedList.add(element);
                     }

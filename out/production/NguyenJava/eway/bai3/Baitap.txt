@@ -1,0 +1,17 @@
+Lọc cảnh báo tầu xâm nhập vùng hoặc ra khỏi vùng.
+Dữ liệu là các file vị trí của tàu được đặt vào trong thư mục position
+Mỗi một file là vị trí của các tầu được đặt sắp xếp theo thời gian. Yêu cầu đọc lần lượt các vị trí này.
+Kiểm tra xem nếu tầu di chuyển vào trong vùng thì cảnh báo tầu đó xâm nhập vùng.
+Còn tầu đang ở trong vùng mà di chuyển ra khỏi vùng thì cảnh báo tàu ra khỏi vùng.
+File vị trí của tàu có định dạng như sau:
+Mmsi|longitude|latitude|thời gian (dd/MM/yyyy HH:mm:ss)
+File danh sách cách vùng có định dạng như sau:
+Tên vùng|longitude_left|longitude_right|latitude_top|latitude_bottom
+Tầu được gọi là ở trong vùng khi:
+Longitude_left <= longitude <= longitude_right
+Và latitude_bottom <= latitude <= latitude_top
+Các cảnh báo ghi ra file alert.txt có định dạng như sau
+Mmsi|Canh bao xam nhap vung| Tên vùng | Longitude|Latitude| thời gian
+Hoặc
+Mmsi|Canh bao di ra khoi vung| Tên vùng | Longitude|Latitude| thời gian
+
