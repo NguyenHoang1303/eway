@@ -7,7 +7,7 @@ Còn tầu đang ở trong vùng mà di chuyển ra khỏi vùng thì cảnh bá
 File vị trí của tàu có định dạng như sau:
 Mmsi|longitude|latitude|thời gian (dd/MM/yyyy HH:mm:ss)
 
-File danh sách cách vùng có định dạng như sau:
+File danh sách các vùng có định dạng như sau:
 Tên vùng|longitude_left|longitude_right|latitude_top|latitude_bottom
 
 

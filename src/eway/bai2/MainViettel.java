@@ -1,6 +1,5 @@
 package eway.bai2;
 
-
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,47 +10,59 @@ import java.util.regex.Pattern;
 
 public class MainViettel {
 
-    public static final String INFOR_MESSAGE = "(\\+84[0-9]{9,10})\\((.+)\\|(.+)\\|(.+)\\)";
-    public static final String TIME = "(0[0-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-([0-9]{4})";
-    public static final String INFORMATION_VIETTEL = "([0-9]{3,4})(.+)\\((([^)]+))\\)";
+    public static final String INFOR_MESSAGE = "(\\+84\\d{9,10})\\((.+)\\|(.+)\\|(.+)\\)";
+    public static final String TIME = "(0\\d|[12]\\d|3[01])-(0[1-9]|1[012])-(\\d{4})";
+    public static final String INFORMATION_VIETTEL = "(\\d{3,4})(.+)\\((.+)\\)";
+    static final String STRUCT_PATH = "bai2/input/struct.txt";
+    static final String MESSEGA_PATH = "bai2/input/message.txt";
 
     public static void main(String[] args) {
-        String structPath = "bai2/input/struct.txt";
-        List<String> listInforStruct = MainViettel.readFile(structPath);
-        String messagePath = "bai2/input/message.txt";
-        List<String> listInforMess = MainViettel.readFile(messagePath);
-        //danh sách mesage theo yeu cầu 1,2
-        List<String> listMessageInvalid = MainViettel.getListMessageByRequest(listInforMess, listInforStruct);
+        List<String> listInforStruct = readFile(STRUCT_PATH);
+        List<String> listInforMess = readFile(MESSEGA_PATH);
+        //danh sách mesage theo thời gian hợp lí và đúng cú pháp
+        List<String> listMessage = getMessagesByRequest(listInforMess, listInforStruct);
         //danh sách các đầu số tổng đài
-        List<String> listPhoneViettelInMessage = MainViettel.getPhoneViettelInMessage(listMessageInvalid);
-        //lọc messeage theo đầu số tổng đài viettel
-        HashMap<String, String> listMessageByPhoneViettel = MainViettel.getMessageByPhoneViettel(listPhoneViettelInMessage, listMessageInvalid);
-        
-        LinkedList<String> linkedListMessage = new LinkedList<>();
-        for (String key : listMessageByPhoneViettel.keySet()) {
-            String messageByPhoneViettel = listMessageByPhoneViettel.get(key);
-            List<String> listMessage = MainViettel.convertStringToList(messageByPhoneViettel);
-            //sap xep message theo thời gian tăng dần
-            MainViettel.sortMessageByDate(listMessage);
+        HashSet<String> phonesViettel = getPhoneViettelInMessage(listMessage);
+        //lấy messeage theo đầu số tổng đài viettel
+        //Key: đầu số Viettel
+        //Value: message
+        HashMap<String, String> listMessages = getMessageByPhoneViettel(phonesViettel, listMessage);
+        List<String> listMessagesByPhone = new LinkedList<>();
+        for (String key : listMessages.keySet()) {
+            String message = listMessages.get(key);
+            List<String> messages = convertStringToList(message);
+            //sap xep message theo thời gian
+            sortMessageByDate(messages);
             //danh sách message theo yêu cầu bài toán
-            linkedListMessage.addAll(MainViettel.sortMessageDuplicatePhoneByDate(listMessage));
+            listMessagesByPhone.addAll(getPhonesMessages(messages));
         }
-
-        HashMap<String,String> hashMapMessageByRequest = MainViettel.getMessageByPhoneViettel(listPhoneViettelInMessage,linkedListMessage);
+        //in ra file txt theo đầu số Viettel
+        HashMap<String, String> hashMapMessage = getMessageByPhoneViettel(phonesViettel, listMessagesByPhone);
         try {
             String path = "bai2/output/";
-            for (String key: hashMapMessageByRequest.keySet()) {
+            Set<String> listKeys = hashMapMessage.keySet();
+            for (String key : listKeys) {
+                String value = hashMapMessage.get(key);
                 String pathMessage = path + key + ".txt";
-                FileWriter fw = new FileWriter(pathMessage);
-                fw.write(hashMapMessageByRequest.get(key));
-                fw.close();
+                FileWriter fileWriter = new FileWriter(pathMessage);
+                int size = convertStringToList(value).size();
+                List<String> listMess = convertStringToList(value);
+                if (size == 1) {
+                    fileWriter.write(value);
+                } else {
+                    for (String content : listMess) {
+                        fileWriter.write(content);
+                        fileWriter.write("\n");
+                    }
+                }
+                fileWriter.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static List<String> readFile(String path) {
+    static List<String> readFile(String path) {
         List<String> list = new ArrayList<>();
         try {
             FileInputStream fileInputStream = new FileInputStream(path);
@@ -64,8 +75,9 @@ public class MainViettel {
         }
         return list;
     }
+
     // lấy ra thông tin cú pháp viettel
-    public static String getInforViettel(String inforViettel, int number) {
+    static String getInforViettel(String inforViettel, int number) {
         Pattern pattern = Pattern.compile(INFORMATION_VIETTEL);
         Matcher matcher = pattern.matcher(inforViettel);
         String result = null;
@@ -82,8 +94,9 @@ public class MainViettel {
 
         return result;
     }
+
     // lấy ra thông tin Message
-    public static String getInforMessage(String messInfor, int choice) {
+    static String getInforMessage(String messInfor, int choice) {
         Pattern pattern = Pattern.compile(INFOR_MESSAGE);
         Matcher matcher = pattern.matcher(messInfor);
         String inforMess = null;
@@ -111,55 +124,52 @@ public class MainViettel {
         }
         return inforMess;
     }
+
     // sắp xếp ngày tăng dần theo ngày tháng
-    public static void sortMessageByDate(List<String> listMessage) {
+    static void sortMessageByDate(List<String> listMessage) {
         listMessage.sort(new Comparator<String>() {
             @Override
-            public int compare(String o1, String o2) {
-                String o1Date = MainViettel.getDateMessInformation(o1).toString();
-                String o2Date = MainViettel.getDateMessInformation(o2).toString();
-                return o1Date.compareTo(o2Date);
+            public int compare(String text1, String text2) {
+                String dateStart = getDateMessInformation(text1).toString();
+                String dateEnd = getDateMessInformation(text2).toString();
+                return dateStart.compareTo(dateEnd);
             }
         });
     }
+
     // kiểm tra cú pháp trong message có đúng ko?
-    public static boolean checkStruct(String messInfor, String structInfor) {
-        String structMess = MainViettel.getInforMessage(messInfor, 2);
-        String phoneMess = MainViettel.getInforMessage(messInfor, 4);
-        String structViettel = MainViettel.getInforViettel(structInfor, 2);
-        String phoneViettel = MainViettel.getInforViettel(structInfor, 1);
+    static boolean checkStruct(String messInfor, String structInfor) {
+        String structMess = getInforMessage(messInfor, 2);
+        String phoneMess = getInforMessage(messInfor, 4);
+        String structViettel = getInforViettel(structInfor, 2);
+        String phoneViettel = getInforViettel(structInfor, 1);
         boolean checkPhone = false;
         boolean checkMess = false;
         if (phoneMess != null && phoneViettel != null) {
             checkPhone = phoneMess.equals(phoneViettel);
         }
         if (structViettel != null && structMess != null) {
-            checkMess = structViettel.toUpperCase().contains(structMess.toUpperCase());
+            checkMess = structViettel.equalsIgnoreCase(structMess);
         }
 
         return checkMess && checkPhone;
     }
-    // kiểm tra ngày tháng năm trong message có lớn hơn so với ngày hiện tại
-    public static boolean checkTime(String messInfor) {
-        String timeMessage = getInforMessage(messInfor, 3);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate dateNow = LocalDate.now();
 
-        Pattern pattern = Pattern.compile(TIME);
-        Matcher matcher = pattern.matcher(timeMessage);
-        if (matcher.find()) {
-            LocalDate dateMessage = LocalDate.from(dateFormat.parse(matcher.group()));
-            return dateNow.compareTo(dateMessage) > 0;
-        }
+    // kiểm tra ngày tháng năm trong message có lớn hơn so với ngày hiện tại
+    static boolean checkTime(String messInfor) {
+        LocalDate dateNow = LocalDate.now();
+        LocalDate dateMessage1 = getDateMessInformation(messInfor);
+        if (dateMessage1 != null) return dateNow.compareTo(dateMessage1) > 0;
         return false;
     }
+
     //lấy ra ngày tháng năm trong mesage
     static LocalDate getDateMessInformation(String messInfor) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         Pattern pattern = Pattern.compile(TIME);
-        boolean checkinforMessage = MainViettel.getInforMessage(messInfor, 3) != null;
+        boolean checkinforMessage = getInforMessage(messInfor, 3) != null;
         if (checkinforMessage) {
-            String timeMessage = MainViettel.getInforMessage(messInfor, 3);
+            String timeMessage = getInforMessage(messInfor, 3);
             Matcher matcher = pattern.matcher(timeMessage);
             if (matcher.find()) {
                 return LocalDate.from(dateFormat.parse(matcher.group()));
@@ -167,22 +177,24 @@ public class MainViettel {
         }
         return null;
     }
-    // danh sách message theo yêu cầu 1 và 2
-    static List<String> getListMessageByRequest(List<String> listMess, List<String> listVietel) {
+
+    // danh sách message đúng cú pháp và hợp lí về thời gian
+    static List<String> getMessagesByRequest(List<String> listMess, List<String> listVietel) {
         List<String> list = new ArrayList<>();
-        boolean checkStructAndDate;
+        boolean checkStructAndTime;
         for (String messInfor : listMess) {
             for (String inforViettel : listVietel) {
-                checkStructAndDate = MainViettel.checkStruct(messInfor, inforViettel) && MainViettel.checkTime(messInfor);
-                if (checkStructAndDate) {
+                checkStructAndTime = checkStruct(messInfor, inforViettel) && checkTime(messInfor);
+                if (checkStructAndTime) {
                     list.add(messInfor);
                 }
             }
         }
         return list;
     }
-    // khoảng cách giữa 2 ngày
-    public static int getDayBetween(LocalDate timeStart, LocalDate timeEnd) {
+
+    // khoảng cách giữa 2 khoảng thời gian theo ngày
+    static int getDayBetween(LocalDate timeStart, LocalDate timeEnd) {
         int betweenTwoYears = (timeStart.getYear() - timeEnd.getYear()) * 365;
         int betweenTwoMonth = (timeStart.getMonthValue() - timeEnd.getMonthValue()) * 30;
         int betweenTwoDate = timeStart.getDayOfMonth() - timeEnd.getDayOfMonth();
@@ -197,37 +209,55 @@ public class MainViettel {
         }
         return betweenTwoDate + betweenTwoYears + betweenTwoMonth;
     }
+
     // lấy ra đầu số tổng đài có trong Message
-    static List<String> getPhoneViettelInMessage(List<String> listMessage) {
-        List<String> listPhoneViettelInMessage = new ArrayList<>();
+    static HashSet<String> getPhoneViettelInMessage(List<String> listMessage) {
+        HashSet<String> list = new HashSet<>();
         for (String messValid : listMessage) {
-            String phoneViettel = MainViettel.getInforMessage(messValid, 4);
-            int count = 0;
-            if (listPhoneViettelInMessage.size() > 0) {
-                for (String phoneVT : listPhoneViettelInMessage) {
-                    if (!phoneViettel.equals(phoneVT)) {
-                        count++;
+            String phoneViettel = getInforMessage(messValid, 4);
+            list.add(phoneViettel);
+
+        }
+        return list;
+    }
+
+    static List<String> convertStringToList(String text) {
+        String[] array = text.split(" /// ");
+        return new ArrayList<>(Arrays.asList(array));
+    }
+
+    //lấy ra các message trùng sđt và sđt tổng đài phải cách nhau 1 tháng
+    static List<String> getPhonesMessages(List<String> list) {
+        LinkedList<String> linkedList = new LinkedList<>();
+        sortMessageByDate(list);
+        for (String element : list) {
+            LocalDate date = getDateMessInformation(element);
+            if (linkedList.size() > 0) {
+                String lastElement = linkedList.getLast();
+                LocalDate lastDate = getDateMessInformation(lastElement);
+                if (date != null && lastDate != null) {
+                    boolean check = getDayBetween(date, lastDate) > 30;
+                    if (check) {
+                        linkedList.add(element);
                     }
                 }
-                if (count == listPhoneViettelInMessage.size()) {
-                    listPhoneViettelInMessage.add(phoneViettel);
-                }
             } else {
-                listPhoneViettelInMessage.add(phoneViettel);
+                linkedList.add(element);
             }
         }
-        return listPhoneViettelInMessage;
+        return new ArrayList<String>(linkedList);
     }
+
     /*
     lấy ra các danh sách message theo đầu số tổng đài
     key: đầu số tổng đài
     values: chuỗi chứa danh sách các message cách nhau bởi " /// "
     */
-    static HashMap<String, String> getMessageByPhoneViettel(List<String> listPhoneVT, List<String> listMessage) {
+    static HashMap<String, String> getMessageByPhoneViettel(HashSet<String> listPhoneVT, List<String> listMessage) {
         HashMap<String, String> list = new HashMap<>();
         for (String phoneViettel : listPhoneVT) {
             for (String message : listMessage) {
-                String phoneMessage = MainViettel.getInforMessage(message, 4);
+                String phoneMessage = getInforMessage(message, 4);
                 boolean chekKey = list.containsKey(phoneViettel);
                 if (chekKey && phoneMessage.equals(phoneViettel)) {
                     String str = list.get(phoneViettel).concat(" /// " + message);
@@ -238,32 +268,6 @@ public class MainViettel {
             }
         }
         return list;
-    }
-
-    static List<String> convertStringToList(String text) {
-        String[] array = text.split(" /// ");
-        return new ArrayList<>(Arrays.asList(array));
-    }
-//lấy ra các message trùng sđt và sđt tổng đài cách nhau 1 tháng
-    static LinkedList<String> sortMessageDuplicatePhoneByDate(List<String> list) {
-        LinkedList<String> linkedList = new LinkedList<>();
-        MainViettel.sortMessageByDate(list);
-        for (String element : list) {
-            LocalDate date105 = MainViettel.getDateMessInformation(element);
-            if (linkedList.size() > 0) {
-                String lastElement = linkedList.getLast();
-                LocalDate lastDate = MainViettel.getDateMessInformation(lastElement);
-                if (date105 != null && lastDate != null) {
-                    boolean check = MainViettel.getDayBetween(date105, lastDate) > 30;
-                    if (check) {
-                        linkedList.add(element);
-                    }
-                }
-            } else {
-                linkedList.add(element);
-            }
-        }
-        return linkedList;
     }
 
 }

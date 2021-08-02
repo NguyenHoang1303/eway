@@ -1,7 +1,21 @@
-9836272| Canh bao xam nhap vung | Vung 1 | 100 | 100 | 2015/12/01 06:12:23
-9836272| Canh bao xam nhap vung | Vung 1 | 100 | 100 | 2015/12/01 05:12:23
-9836272| Canh bao xam nhap vung | Vung 1 | 100 | 100 | 2015/12/01 07:12:23
-9836272| Canh bao xam nhap vung | Vung 1 | 100 | 100 | 2015/12/01 08:12:23
-9836272| Canh bao xam nhap vung | Vung 1 | 100 | 100 | 2015/12/01 09:12:23
-9836272| Canh bao xam nhap vung | Vung 2 | 110 | 110 | 2015/12/01 13:12:23
-9836272| Canh bao xam nhap vung | Vung 2 | 130 | 130 | 2015/12/01 15:12:23
+Warning{mmsi='9836272', warning='canh bao ra khoi vung', areName='Vung 1', longitude='120', latitude='100', date=2015/12/01 00:03:23}
+Warning{mmsi='9836272', warning='canh bao ra khoi vung', areName='Vung 1', longitude='140', latitude='100', date=2015/12/01 00:06:23}
+Warning{mmsi='9836272', warning='canh bao ra khoi vung', areName='Vung 1', longitude='150', latitude='100', date=2015/12/01 00:09:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='100', date=2015/12/01 00:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='101', latitude='100', date=2015/12/01 01:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='102', latitude='100', date=2015/12/01 02:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='103', latitude='100', date=2015/12/01 03:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='104', latitude='100', date=2015/12/01 04:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='105', latitude='100', date=2015/12/01 05:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='106', latitude='100', date=2015/12/01 06:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='107', latitude='100', date=2015/12/01 07:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='108', latitude='100', date=2015/12/01 08:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='109', latitude='100', date=2015/12/01 09:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='110', latitude='101', date=2015/12/01 10:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='102', date=2015/12/01 11:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='103', date=2015/12/01 12:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='104', date=2015/12/01 13:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='105', date=2015/12/01 14:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='106', date=2015/12/01 15:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='107', date=2015/12/01 16:12:23}
+Warning{mmsi='9836272', warning='canh bao xam nhap  vung', areName='vung 2', longitude='100', latitude='108', date=2015/12/01 17:12:23}
