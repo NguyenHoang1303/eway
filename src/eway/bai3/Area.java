@@ -1,38 +1,27 @@
 package eway.bai3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Area extends Thread {
+public class Area {
     private String nameArea;
     private int longitudeLeft;
     private int longitudeRight;
     private int latitudeTop;
     private int latitudeBottom;
-    private String pathArea;
-    private Area area;
 
 
-
-    public void setArea(Area area) {
-        this.area = area;
-    }
-
-    @Override
-    public void run() {
-        getAreaToFile();
-    }
-
-
-
-    public void getAreaToFile() {
-        area = new Area();
-        String name = getInformationArea(pathArea, 1);
+    public static Area getAreaToContent(String text) {
+        Area area = new Area();
+        String name = getInformationArea(text, 1);
         area.setNameArea(name);
-        area.setLongitudeLeft(Integer.parseInt(getInformationArea(pathArea, 2)));
-        area.setLongitudeRight(Integer.parseInt(getInformationArea(pathArea, 3)));
-        area.setLatitudeTop(Integer.parseInt(getInformationArea(pathArea, 4)));
-        area.setLatitudeBottom(Integer.parseInt(getInformationArea(pathArea, 5)));
+        area.setLongitudeLeft(Integer.parseInt(getInformationArea(text, 2)));
+        area.setLongitudeRight(Integer.parseInt(getInformationArea(text, 3)));
+        area.setLatitudeTop(Integer.parseInt(getInformationArea(text, 4)));
+        area.setLatitudeBottom(Integer.parseInt(getInformationArea(text, 5)));
+        return area;
     }
 
     public static String getInformationArea(String area, int choice) {
@@ -67,23 +56,6 @@ public class Area extends Thread {
             }
         }
         return inforSearch;
-    }
-
-    public String getPathArea() {
-        return pathArea;
-    }
-
-    public void setPathArea(String pathArea) {
-        this.pathArea = pathArea;
-    }
-
-
-    public Area getArea() {
-        return area;
-    }
-
-    public Area(String pathArea) {
-        this.pathArea = pathArea;
     }
 
     public Area() {

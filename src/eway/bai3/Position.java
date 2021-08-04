@@ -1,6 +1,7 @@
 package eway.bai3;
 
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,22 +10,14 @@ public class Position extends Thread {
     private int longitude;
     private int latitude;
     private String time;
-    private  String informationPosition;
-    private  Position position;
 
-    @Override
-    public void run() {
-        getPositionToFile();
-    }
-
-     void getPositionToFile() {
-        position = new Position();
-        if (informationPosition != null){
-            position.setMmsi(getInformationPosition(informationPosition, 1));
-            position.setLongitude(Integer.parseInt(getInformationPosition(informationPosition, 2)));
-            position.setLatitude(Integer.parseInt(getInformationPosition(informationPosition, 3)));
-            position.setTime(getInformationPosition(informationPosition, 4));
-        }
+    public static Position getPositionToFile(String informationPosition) {
+        Position position = new Position();
+        position.setMmsi(getInformationPosition(informationPosition, 1));
+        position.setLongitude(Integer.parseInt(getInformationPosition(informationPosition, 2)));
+        position.setLatitude(Integer.parseInt(getInformationPosition(informationPosition, 3)));
+        position.setTime(getInformationPosition(informationPosition, 4));
+        return position;
     }
 
     static String getInformationPosition(String position, int choice) {
@@ -55,26 +48,6 @@ public class Position extends Thread {
             }
         }
         return inforSearch;
-    }
-
-    public String getPathFile() {
-        return informationPosition;
-    }
-
-    public void setPathFile(String informationPosition) {
-        this.informationPosition = informationPosition;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Position(String informationPosition) {
-        this.informationPosition = informationPosition;
     }
 
     public Position() {

@@ -2,49 +2,24 @@ package eway.bai3;
 
 import java.util.List;
 
-public class Warning extends Thread {
+public class Warning {
     private String mmsi;
     private String warningMessage;
     private String areName;
     private int longitude;
     private int latitude;
     private String time;
-    private List<Area> areaList;
-    private Position position;
-    private Warning warning;
-
     public Warning() {
     }
 
-    public Warning getWarning() {
-        return warning;
-    }
-
-    @Override
-    public void run() {
-        getWarningInform();
-    }
 
 
     public String getTime() {
         return time;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Warning(List<Area> lisArea, Position position) {
-        this.areaList = lisArea;
-        this.position = position;
-    }
-
-    public void getWarningInform() {
-        warning = new Warning();
+    public static Warning getWarningInform(List<Area> areaList, Position position) {
+       Warning warning = new Warning();
         for (Area area : areaList) {
             boolean checkLongtiude = (area.getLongitudeLeft() <= position.getLongitude()) && (position.getLongitude() <= area.getLongitudeRight());
             boolean checkLatitude = (area.getLatitudeBottom() <= position.getLatitude()) && (position.getLatitude() <= area.getLatitudeTop());
@@ -55,6 +30,8 @@ public class Warning extends Thread {
                 warning.setLongitude(position.getLongitude());
                 warning.setLatitude(position.getLatitude());
                 warning.setTime(position.getTime());
+                System.out.println(warning);
+                return warning;
             }
         }
 
@@ -64,6 +41,8 @@ public class Warning extends Thread {
         warning.setLongitude(position.getLongitude());
         warning.setLatitude(position.getLatitude());
         warning.setTime(position.getTime());
+        System.out.println(warning);
+        return warning;
     }
 
     public Warning(String mmsi, String warningMessage, String areName, int longitude, int latitude, String date) {
@@ -98,18 +77,6 @@ public class Warning extends Thread {
 
     public void setWarningMessage(String warningMessage) {
         this.warningMessage = warningMessage;
-    }
-
-    public void setAreaList(List<Area> areaList) {
-        this.areaList = areaList;
-    }
-
-    public void setWarning(Warning warning) {
-        this.warning = warning;
-    }
-
-    public List<Area> getAreaList() {
-        return areaList;
     }
 
     public String getAreName() {
