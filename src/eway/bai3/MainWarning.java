@@ -7,25 +7,78 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainWarning {
     public final static String PATH_WARNING = "src/eway/bai3/filetxt/alert.txt";
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         String pathArea = "src/eway/bai3/filetxt/area.txt";
         String pathPositions = "src/eway/bai3/filetxt/positions.txt";
         List<String> informationAreas = readFile(pathArea);
         List<String> infortmationPositions = readFile(pathPositions);
-        List<Area> listArea = getListArea(informationAreas);
-        List<Position> positionList = getListPosition(infortmationPositions);
+        FileInputStream fileInputStream = new FileInputStream(pathArea);
+        Scanner readFileArea = new Scanner(fileInputStream);
+        List<Area> listThreadArea = new ArrayList<>();
+        while (readFileArea.hasNextLine()){
+            String text = readFileArea.nextLine();
+            Area area = new Area(text);
+            area.start();
+            listThreadArea.add(area);
+        }
+        for (Area a : listThreadArea) {
+            a.join();
+        }
+        List<Area> listArea = new ArrayList<>();
+        for (Area a : listThreadArea) {
+            listArea.add(a.getArea());
+        }
+
+        FileInputStream filePosition = new FileInputStream(pathPositions);
+        Scanner readFilePositom = new Scanner(filePosition);
+        List<Warning> list = new ArrayList<>();
+        List<Position> listP = new ArrayList<>();
+        while (readFilePositom.hasNextLine()){
+            String inforPosition = readFilePositom.nextLine();
+            if (inforPosition != null){
+                Position position = new Position(inforPosition);
+                position.start();
+                listP.add(position);
+            }
+        }
+        for (Position p : listP) {
+            p.join();
+        }
+        Position position = new Position();
+        for (Position p: listP) {
+            position = p.getPosition();
+            Warning warning = new Warning(listArea,position);
+            warning.start();
+            list.add(warning);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).join();
+        }
+
         Warning warning = new Warning();
-        List<Warning> warningList = new ArrayList<>();
-        for (Position position : positionList) {
-           warningList.add(warning.getWarning(listArea,position));
-          }
-        writeFile(warningList);
+        for (Warning w: list) {
+            warning = w.getWarning();
+            System.out.println(warning.toString());
+        }
+
+
+
+
+
+
+
+
+//        List<Area> listArea = getListArea(informationAreas);
+//        List<Position> positionList = getListPosition(infortmationPositions);
+//        Warning warning = new Warning();
+//        List<Warning> warningList = new ArrayList<>();
+//        for (Position position : positionList) {
+//           warningList.add(warning.getWarning(listArea,position));
+//          }
+//        writeFile(warningList);
     }
 
     static List<String> readFile(String path) {
@@ -33,6 +86,7 @@ public class MainWarning {
         try {
             FileInputStream fileInputStream = new FileInputStream(path);
             Scanner readFile = new Scanner(fileInputStream);
+            List<Thread> threadList = new ArrayList<>();
             while (readFile.hasNextLine()) {
                 String text = readFile.nextLine();
                 Thread thread = new Thread() {
@@ -42,13 +96,9 @@ public class MainWarning {
                     }
                 };
                 thread.start();
-                try {
-                    thread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                threadList.add(thread);
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException  e) {
             e.printStackTrace();
         }
         return list;
@@ -57,13 +107,13 @@ public class MainWarning {
     static void writeFile(List<Warning> list){
         try {
             FileWriter fileWriter = new FileWriter(PATH_WARNING,true);
+            List<Thread> threadList = new ArrayList<>();
             for (Warning warning: list) {
                 Thread thread = new Thread(){
                     @Override
                     public void run() {
                         try {
-                            fileWriter.write(warning.toString());
-                            fileWriter.write("\n");
+                            fileWriter.write(warning.toString()+ "\n");
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -71,6 +121,10 @@ public class MainWarning {
                     }
                 };
                 thread.start();
+                threadList.add(thread);
+            }
+
+            for (Thread thread: threadList) {
                 thread.join();
             }
             fileWriter.close();
@@ -78,95 +132,4 @@ public class MainWarning {
             e.printStackTrace();
         }
     }
-
-    static String getInformationArea(String area, int choice) {
-        Pattern pattern = Pattern.compile("(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)");
-        Matcher matcher = pattern.matcher(area);
-        String inforSearch = null;
-        if (matcher.find()) {
-            switch (choice) {
-                case 1:
-                    //Ten vung
-                    inforSearch = matcher.group(1);
-                    break;
-                case 2:
-                    //longitude_left
-                    inforSearch = matcher.group(2);
-                    break;
-                case 3:
-                    //longitude_right
-                    inforSearch = matcher.group(3);
-                    break;
-                case 4:
-                    //latitude_top
-                    inforSearch = matcher.group(4);
-                    break;
-                case 5:
-                    //latitude_bottom
-                    inforSearch = matcher.group(5);
-                    break;
-                default:
-                    System.out.println("chon sai!");
-                    break;
-            }
-        }
-        return inforSearch;
-    }
-
-    static String getInformationPosition(String position, int choice) {
-        Pattern pattern = Pattern.compile("(.+)\\|(.+)\\|(.+)\\|(.+)");
-        Matcher matcher = pattern.matcher(position);
-        String inforSearch = null;
-        if (matcher.find()) {
-            switch (choice) {
-                case 1:
-                    //Mmsi
-                    inforSearch = matcher.group(1);
-                    break;
-                case 2:
-                    //longitude
-                    inforSearch = matcher.group(2);
-                    break;
-                case 3:
-                    //latitude
-                    inforSearch = matcher.group(3);
-                    break;
-                case 4:
-                    //thời gian (dd/MM/yyyy HH:mm:ss)
-                    inforSearch = matcher.group(4);
-                    break;
-                default:
-                    System.out.println("chon sai!");
-                    break;
-            }
-        }
-        return inforSearch;
-    }
-
-    static List<Area> getListArea(List<String> listText) {
-        List<Area> list = new ArrayList<>();
-        for (String area : listText) {
-            String nameArea = getInformationArea(area, 1);
-            int longitudeLeft = Integer.parseInt(getInformationArea(area, 2));
-            int longitudeRight = Integer.parseInt(getInformationArea(area, 3));
-            int latitudeTop = Integer.parseInt(getInformationArea(area, 4));
-            int latitudeBottom = Integer.parseInt(getInformationArea(area, 5));
-            list.add(new Area(nameArea, longitudeLeft, longitudeRight, latitudeTop, latitudeBottom));
-        }
-        return list;
-    }
-
-    static List<Position> getListPosition(List<String> listText) {
-        List<Position> list = new ArrayList<>();
-        for (String position : listText) {
-            String mmsi = getInformationPosition(position, 1);
-            int longitude = Integer.parseInt(getInformationPosition(position, 2));
-            int latitude = Integer.parseInt(getInformationPosition(position, 3));
-            String date = getInformationPosition(position, 4);
-            list.add(new Position(mmsi, longitude, latitude, date));
-        }
-        return list;
-    }
-
-
 }

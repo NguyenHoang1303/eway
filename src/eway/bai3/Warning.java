@@ -1,50 +1,74 @@
 package eway.bai3;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public class Warning {
+public class Warning extends Thread {
     private String mmsi;
-    private String warning;
+    private String warningMessage;
     private String areName;
     private int longitude;
     private int latitude;
     private String time;
+    private List<Area> areaList;
+    private Position position;
+    private Warning warning;
 
     public Warning() {
     }
 
-    public Warning getWarning(List<Area> areaList, Position position){
-        Warning warning = new Warning();
-        LinkedList<Position> list = new LinkedList<>();
-        for (Area area: areaList) {
+    public Warning getWarning() {
+        return warning;
+    }
+
+    @Override
+    public void run() {
+        getWarningInform();
+    }
+
+
+    public String getTime() {
+        return time;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Warning(List<Area> lisArea, Position position) {
+        this.areaList = lisArea;
+        this.position = position;
+    }
+
+    public void getWarningInform() {
+        warning = new Warning();
+        for (Area area : areaList) {
             boolean checkLongtiude = (area.getLongitudeLeft() <= position.getLongitude()) && (position.getLongitude() <= area.getLongitudeRight());
             boolean checkLatitude = (area.getLatitudeBottom() <= position.getLatitude()) && (position.getLatitude() <= area.getLatitudeTop());
-            boolean chekLongtiude1 = area.getLongitudeLeft() >= position.getLongitude();
-            if (checkLatitude && checkLongtiude){
+            if (checkLatitude && checkLongtiude) {
                 warning.setMmsi(position.getMmsi());
-                warning.setWarning("canh bao ra khoi vung");
+                warning.setWarningMessage("canh bao ra khoi vung");
                 warning.setAreName(area.getNameArea());
                 warning.setLongitude(position.getLongitude());
                 warning.setLatitude(position.getLatitude());
                 warning.setTime(position.getTime());
-                System.out.println(warning.toString());
-                return warning;
             }
         }
+
         warning.setMmsi(position.getMmsi());
-        warning.setWarning("canh bao xam nhap  vung");
+        warning.setWarningMessage("canh bao xam nhap vung");
         warning.setAreName("vung 2");
         warning.setLongitude(position.getLongitude());
         warning.setLatitude(position.getLatitude());
         warning.setTime(position.getTime());
-        System.out.println(warning.toString());
-        return warning;
     }
 
-    public Warning(String mmsi, String warning, String areName, int longitude, int latitude, String date) {
+    public Warning(String mmsi, String warningMessage, String areName, int longitude, int latitude, String date) {
         this.mmsi = mmsi;
-        this.warning = warning;
+        this.warningMessage = warningMessage;
         this.areName = areName;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -53,14 +77,7 @@ public class Warning {
 
     @Override
     public String toString() {
-        return "Warning{" +
-                "mmsi='" + mmsi + '\'' +
-                ", warning='" + warning + '\'' +
-                ", areName='" + areName + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", date=" + time +
-                '}';
+        return mmsi + "|" + warningMessage + "|" + areName + "|" + longitude + "|" + latitude + "|" + time;
     }
 
     public String getMmsi() {
@@ -71,12 +88,28 @@ public class Warning {
         this.mmsi = mmsi;
     }
 
-    public String getWarning() {
-        return warning;
+    public void setWarning(String warningMessage) {
+        this.warningMessage = warningMessage;
     }
 
-    public void setWarning(String warning) {
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
+    }
+
+    public void setAreaList(List<Area> areaList) {
+        this.areaList = areaList;
+    }
+
+    public void setWarning(Warning warning) {
         this.warning = warning;
+    }
+
+    public List<Area> getAreaList() {
+        return areaList;
     }
 
     public String getAreName() {

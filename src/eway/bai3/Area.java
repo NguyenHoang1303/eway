@@ -1,11 +1,90 @@
 package eway.bai3;
 
-public class Area {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Area extends Thread {
     private String nameArea;
-    public int longitudeLeft;
-    public int longitudeRight;
-    public int latitudeTop;
-    public int latitudeBottom;
+    private int longitudeLeft;
+    private int longitudeRight;
+    private int latitudeTop;
+    private int latitudeBottom;
+    private String pathArea;
+    private Area area;
+
+
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    @Override
+    public void run() {
+        getAreaToFile();
+    }
+
+
+
+    public void getAreaToFile() {
+        area = new Area();
+        String name = getInformationArea(pathArea, 1);
+        area.setNameArea(name);
+        area.setLongitudeLeft(Integer.parseInt(getInformationArea(pathArea, 2)));
+        area.setLongitudeRight(Integer.parseInt(getInformationArea(pathArea, 3)));
+        area.setLatitudeTop(Integer.parseInt(getInformationArea(pathArea, 4)));
+        area.setLatitudeBottom(Integer.parseInt(getInformationArea(pathArea, 5)));
+    }
+
+    public static String getInformationArea(String area, int choice) {
+        Pattern pattern = Pattern.compile("(.+)\\|(.+)\\|(.+)\\|(.+)\\|(.+)");
+        Matcher matcher = pattern.matcher(area);
+        String inforSearch = null;
+        if (matcher.find()) {
+            switch (choice) {
+                case 1:
+                    //Ten vung
+                    inforSearch = matcher.group(1);
+                    break;
+                case 2:
+                    //longitude_left
+                    inforSearch = matcher.group(2);
+                    break;
+                case 3:
+                    //longitude_right
+                    inforSearch = matcher.group(3);
+                    break;
+                case 4:
+                    //latitude_top
+                    inforSearch = matcher.group(4);
+                    break;
+                case 5:
+                    //latitude_bottom
+                    inforSearch = matcher.group(5);
+                    break;
+                default:
+                    System.out.println("chon sai!");
+                    break;
+            }
+        }
+        return inforSearch;
+    }
+
+    public String getPathArea() {
+        return pathArea;
+    }
+
+    public void setPathArea(String pathArea) {
+        this.pathArea = pathArea;
+    }
+
+
+    public Area getArea() {
+        return area;
+    }
+
+    public Area(String pathArea) {
+        this.pathArea = pathArea;
+    }
 
     public Area() {
     }

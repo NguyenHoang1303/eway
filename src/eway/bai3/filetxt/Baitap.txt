@@ -10,15 +10,10 @@ Mmsi|longitude|latitude|thời gian (dd/MM/yyyy HH:mm:ss)
 File danh sách các vùng có định dạng như sau:
 Tên vùng|longitude_left|longitude_right|latitude_top|latitude_bottom
 
-
 Tầu được gọi là ở trong vùng khi:
 
 Longitude_left <= longitude <= longitude_right
 Và latitude_bottom <= latitude <= latitude_top
-
-9836272|100|100|2015/12/01 00:12:23
-
-
 
 Các cảnh báo ghi ra file alert.txt có định dạng như sau
 Mmsi|Canh bao xam nhap vung| Tên vùng | Longitude|Latitude| thời gian

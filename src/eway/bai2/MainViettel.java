@@ -19,10 +19,12 @@ public class MainViettel {
     public static void main(String[] args) {
         List<String> listInforStruct = readFile(STRUCT_PATH);
         List<String> listInforMess = readFile(MESSEGA_PATH);
+
         //danh sách mesage theo thời gian hợp lí và đúng cú pháp
         List<String> listMessage = getMessagesByRequest(listInforMess, listInforStruct);
         //danh sách các đầu số tổng đài
         HashSet<String> phonesViettel = getPhoneViettelInMessage(listMessage);
+
         //lấy messeage theo đầu số tổng đài viettel
         //Key: đầu số Viettel
         //Value: message
@@ -36,6 +38,7 @@ public class MainViettel {
             //danh sách message theo yêu cầu bài toán
             listMessagesByPhone.addAll(getPhonesMessages(messages));
         }
+
         //in ra file txt theo đầu số Viettel
         HashMap<String, String> hashMapMessage = getMessageByPhoneViettel(phonesViettel, listMessagesByPhone);
         try {
